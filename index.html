@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tarea 2 - Crear cuenta | tarea-2-registro</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #F5F5F5; color: #1F1F1F; margin: 0; padding: 16px; }
+    form { background: white; border-radius: 10px; padding: 20px; max-width: 360px; margin: 0 auto; }
+    label { display: block; font-weight: bold; margin-top: 14px; }
+    input { width: 100%; box-sizing: border-box; font-size: 18px; padding: 12px; border: 1px solid #767676; border-radius: 6px; margin-top: 4px; }
+    button { font-size: 18px; min-height: 48px; padding: 0 16px; border-radius: 6px; cursor: pointer; margin-top: 8px; }
+    .ver { background: #FFFFFF; border: 2px solid #767676; }
+    .ver[aria-pressed="true"] { background: #1F1F1F; color: #FFFFFF; }
+    .crear { background: #2E7D32; color: #FFFFFF; border: 0; width: 100%; margin-top: 18px; }
+    button:focus-visible, input:focus-visible { outline: 4px solid #F4B400; outline-offset: 2px; }
+    .con-error { border: 3px solid #B3261E; }
+    .error { color: #B3261E; font-weight: bold; margin: 4px 0 0; min-height: 20px; }
+    .exito { color: #2E7D32; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <p><small>Carpeta: tarea-2-registro</small></p>
+  <form id="registro" novalidate>
+    <h1>Crear cuenta</h1>
+    <p>Completa los 3 datos.</p>
+    <label for="nombre">Nombre completo</label>
+    <input id="nombre" autocomplete="name" aria-describedby="error-nombre">
+    <p class="error" id="error-nombre"></p>
+    <label for="correo">Correo</label>
+    <input id="correo" type="email" autocomplete="email" aria-describedby="error-correo">
+    <p class="error" id="error-correo"></p>
+    <label for="clave">Contraseña (mínimo 8 letras o números)</label>
+    <input id="clave" type="password" autocomplete="new-password" aria-describedby="error-clave">
+    <button type="button" class="ver" id="ver-clave" aria-pressed="false">Mostrar contraseña</button>
+    <p class="error" id="error-clave"></p>
+    <button type="submit" class="crear">Crear cuenta</button>
+    <p id="mensaje" role="status"></p>
+  </form>
+  <script>
+    var botonVer = document.getElementById('ver-clave');
+    botonVer.addEventListener('click', function () {
+      var campo = document.getElementById('clave');
+      if (campo.type === 'password') {
+        campo.type = 'text';
+        botonVer.setAttribute('aria-pressed', 'true');
+      } else {
+        campo.type = 'password';
+        botonVer.setAttribute('aria-pressed', 'false');
+      }
+    });
+    function marcar(idCampo, textoError) {
+      var campo = document.getElementById(idCampo);
+      var error = document.getElementById('error-' + idCampo);
+      error.textContent = textoError;
+      if (textoError === '') {
+        campo.classList.remove('con-error');
+      } else {
+        campo.classList.add('con-error');
+      }
+    }
+    document.getElementById('registro').addEventListener('submit', function (evento) {
+      evento.preventDefault();
+      var nombre = document.getElementById('nombre').value;
+      var correo = document.getElementById('correo').value;
+      var clave = document.getElementById('clave').value;
+      var primerError = '';
+      if (nombre === '') {
+        marcar('nombre', 'Escribe tu nombre.');
+        if (primerError === '') primerError = 'nombre';
+      } else {
+        marcar('nombre', '');
+      }
+      if (correo.indexOf('@') === -1 || correo.indexOf('.') === -1) {
+        marcar('correo', 'Escribe un correo como ana@universidad.edu.pe');
+        if (primerError === '') primerError = 'correo';
+      } else {
+        marcar('correo', '');
+      }
+      if (clave.length < 8) {
+        marcar('clave', 'La contraseña tiene ' + clave.length + ' caracteres. Necesita 8 o más.');
+        if (primerError === '') primerError = 'clave';
+      } else {
+        marcar('clave', '');
+      }
+      var mensaje = document.getElementById('mensaje');
+      if (primerError !== '') {
+        document.getElementById(primerError).focus();
+        mensaje.textContent = '';
+      } else {
+        mensaje.textContent = '¡Cuenta creada!';
+        mensaje.className = 'exito';
+      }
+    });
+  </script>
+</body>
+</html>
